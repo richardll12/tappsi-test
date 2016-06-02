@@ -21,4 +21,11 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        mapbox:style_url="@string/style_mapbox_streets"
+        mapbox:access_token="<your access token here>"/>
+
 </android.support.design.widget.CoordinatorLayout>

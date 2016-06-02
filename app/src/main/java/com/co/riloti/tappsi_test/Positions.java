@@ -17,9 +17,13 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.co.riloti.tappsi_test.models.Booking;
 import com.co.riloti.tappsi_test.models.Solicitud;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +39,8 @@ public class Positions extends AppCompatActivity {
     private boolean isGPSEnabled;
     private boolean isNetworkEnabled;
     private Location myLocation;
+    private Location centroide;
+    private List<Location> puntos;
 
 
     @Override
@@ -98,6 +104,30 @@ public class Positions extends AppCompatActivity {
     public void calculateCentroid(Solicitud sol, int code){
         System.out.println("CONSUM_JSON Ok Response: "+code);
         System.out.println("CONSUM_JSON "+sol.toString());
+
+        double sumLat = 0;
+        double sumLon = 0;
+
+        puntos = new ArrayList<Location>();
+
+        for (Booking bk : sol.getBookings()){
+            Location loc = new Location("Json");
+            loc.setLatitude(bk.getLat());
+            loc.setLongitude(bk.getLon());
+            puntos.add(loc);
+        }
+        puntos.add(this.myLocation);
+
+        for (Location l : puntos){
+            sumLat = sumLat + l.getLatitude();
+            sumLon = sumLon + l.getLongitude();
+        }
+
+        this.centroide = new Location("Calculate");
+        this.centroide.setLongitude(sumLon/puntos.size());
+        this.centroide.setLatitude(sumLat/puntos.size());
+
+        this.puntos.add(this.centroide);
     }
 
     public void consumirJson(){
@@ -128,6 +158,8 @@ public class Positions extends AppCompatActivity {
             }
 
         });
+
+
     }
 
     @Override
